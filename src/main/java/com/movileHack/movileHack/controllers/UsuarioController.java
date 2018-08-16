@@ -127,7 +127,7 @@ public class UsuarioController {
 	 * @throws ParseException 
 	 */
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<Response<UsuarioDTO>> atualizar(@PathVariable("id") Long id, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) throws ParseException {
+	public ResponseEntity<Response<UsuarioDTO>> atualizarUsuario(@PathVariable("id") Long id, @Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) throws ParseException {
 		log.info("Atualizando usuário: {}", usuarioDTO.getNome());
 		Response<UsuarioDTO> response = new Response<UsuarioDTO>();
 		try {
@@ -154,14 +154,15 @@ public class UsuarioController {
 	 * @return ResponseEntity<Response<Usuario>>
 	 */
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<Response<String>> remover(@PathVariable("id") Long id) throws ApplicationException{
+	public ResponseEntity<Response<UsuarioDTO>> removerUsuario(@PathVariable("id") Long id) throws ApplicationException{
 		log.info("Removendo usuário: {}", id);
-		Response<String> response = new Response<String>();
+		Response<UsuarioDTO> response = new Response<UsuarioDTO>();
 		try {
 			UsuarioDTO usuario = this.usuarioService.buscarPorId(id);
 			if (usuario != null) {
 				this.usuarioService.removerUsuario(id);
-				return ResponseEntity.ok(new Response<String>());
+				response.setData(usuario);
+				return ResponseEntity.ok(response);
 			}else {
 				log.info("Erro ao remover usuário ID: ", id);
 				response.getErrors().add("Erro ao remover usuário. Registro não encontrado para o id " + id);
